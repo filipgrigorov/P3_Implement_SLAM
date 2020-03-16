@@ -50,7 +50,7 @@ class robot:
         x = self.x + dx + self.rand() * self.motion_noise
         y = self.y + dy + self.rand() * self.motion_noise
         
-        if x < 0.0 or x > self.world_size or y < 0.0 or y > self.world_size:
+        if self.__is_outside_boundaries(x, y):
             return False
         else:
             self.x = x
@@ -78,6 +78,16 @@ class robot:
             '''
            
         measurements = []
+
+        for i, landmark in enumerate(self.landmarks):
+            dx = landmark[0] - self.x
+            dy = landmark[1] - self.y
+            if self.__is_within_range(dx, dy):
+                measurements.append([
+                    i,
+                    dx + self.rand() * self.measurement_noise,
+                    dy + self.rand() * self.measurement_noise
+                ])
         
         ## TODO: iterate through all of the landmarks in a world
         
@@ -105,6 +115,11 @@ class robot:
                                    round(random.random() * self.world_size)])
         self.num_landmarks = num_landmarks
 
+    def __is_outside_boundaries(self, new_x, new_y):
+        return new_x < 0.0 or new_x > self.world_size or new_y < 0.0 or new_y > self.world_size
+    
+    def __is_within_range(self, lx, ly):
+        return lx <= self.measurement_range and ly <= self.measurement_range
 
     # called when print(robot) is called; prints the robot's location
     def __repr__(self):

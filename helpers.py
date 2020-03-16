@@ -16,31 +16,34 @@ def display_world(world_size, position, landmarks=None):
     sns.set_style("dark")
 
     # Plot grid of values
-    world_grid = np.zeros((world_size+1, world_size+1))
+    world_grid = np.zeros((world_size + 1, world_size + 1))
 
-    # Set minor axes in between the labels
-    ax=plt.gca()
-    cols = world_size+1
-    rows = world_size+1
+    # Set minor axes in between the labels (gca = "get current axes" of the given plt instance) similar to gcf = "get current figure"
+    ax = plt.gca()
+    cols = world_size + 1
+    rows = world_size + 1
 
-    ax.set_xticks([x for x in range(1,cols)],minor=True )
-    ax.set_yticks([y for y in range(1,rows)],minor=True)
+    ax.set_xlabel('x (m)')
+    ax.set_ylabel('y (m)')
+
+    ax.set_xticks([x for x in range(1, cols)], minor=True )
+    ax.set_yticks([y for y in range(1, rows)], minor=True)
     
     # Plot grid on minor axes in gray (width = 1)
-    plt.grid(which='minor',ls='-',lw=1, color='white')
+    plt.grid(which='minor', ls='-', lw=1, color='white')
     
     # Plot grid on major axes in larger width
-    plt.grid(which='major',ls='-',lw=2, color='white')
+    plt.grid(which='major', ls='-', lw=2, color='white')
     
     # Create an 'o' character that represents the robot
-    # ha = horizontal alignment, va = vertical
+    # ha = horizontal alignment, va = vertical alignment
     ax.text(position[0], position[1], 'o', ha='center', va='center', color='r', fontsize=30)
     
     # Draw landmarks if they exists
-    if(landmarks is not None):
+    if landmarks:
         # loop through all path indices and draw a dot (unless it's at the car's location)
         for pos in landmarks:
-            if(pos != position):
+            if pos != position:
                 ax.text(pos[0], pos[1], 'x', ha='center', va='center', color='purple', fontsize=20)
     
     # Display final result
