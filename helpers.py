@@ -1,10 +1,10 @@
-from robot_class import robot
-from math import *
-import random
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
+from robot_class import Robot
 
+import math
+import matplotlib.pyplot as plt
+import numpy as np
+import random
+import seaborn as sns
 
 # --------
 # this helper function displays the world that a robot is in
@@ -57,40 +57,37 @@ def display_world(world_size, position, landmarks=None):
 #
 def make_data(N, num_landmarks, world_size, measurement_range, motion_noise, 
               measurement_noise, distance):
-
-
     # check if data has been made
     complete = False
 
     while not complete:
-
         data = []
 
         # make robot and landmarks
-        r = robot(world_size, measurement_range, motion_noise, measurement_noise)
-        r.make_landmarks(num_landmarks)
+        robot = Robot(world_size, measurement_range, motion_noise, measurement_noise)
+        robot.make_landmarks(num_landmarks)
         seen = [False for row in range(num_landmarks)]
     
         # guess an initial motion
-        orientation = random.random() * 2.0 * pi
-        dx = cos(orientation) * distance
-        dy = sin(orientation) * distance
+        orientation = random.random() * 2.0 * np.pi
+        dx = np.cos(orientation) * distance
+        dy = np.sin(orientation) * distance
     
-        for k in range(N-1):
-    
+        for k in range(0, N - 1):
+            print('Run: ', k)
             # collect sensor measurements in a list, Z
-            Z = r.sense()
+            Z = robot.sense()
 
             # check off all landmarks that were observed 
-            for i in range(len(Z)):
+            for i in range(0, len(Z)):
                 seen[Z[i][0]] = True
     
             # move
-            while not r.move(dx, dy):
+            while not robot.move(dx, dy):
                 # if we'd be leaving the robot world, pick instead a new direction
-                orientation = random.random() * 2.0 * pi
-                dx = cos(orientation) * distance
-                dy = sin(orientation) * distance
+                orientation = random.random() * 2.0 * np.pi
+                dx = np.cos(orientation) * distance
+                dy = np.sin(orientation) * distance
 
             # collect/memorize all sensor and motion data
             data.append([Z, [dx, dy]])
@@ -99,8 +96,7 @@ def make_data(N, num_landmarks, world_size, measurement_range, motion_noise,
         complete = (sum(seen) == num_landmarks)
 
     print(' ')
-    print('Landmarks: ', r.landmarks)
-    print(r)
-
+    print('Landmarks: ', robot.landmarks)
+    print(robot)
 
     return data

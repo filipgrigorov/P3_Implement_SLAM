@@ -1,10 +1,7 @@
 from math import *
 import random
 
-
 ### ------------------------------------- ###
-# Below, is the robot class
-#
 # This robot lives in 2D, x-y space, and its motion is
 # pointed in a random direction, initially.
 # It moves in a straight line until it comes close to a wall 
@@ -16,7 +13,7 @@ import random
 # easier to implement the essentials of SLAM without
 # cluttered math.
 #
-class robot:
+class Robot:
     
     # --------
     # init:
@@ -39,14 +36,12 @@ class robot:
     # returns a positive, random float
     def rand(self):
         return random.random() * 2.0 - 1.0
-    
-    
+
     # --------
-    # move: attempts to move robot by dx, dy. If outside world
+    # move: attempts to move Robot by dx, dy. If outside world
     #       boundary, then the move does nothing and instead returns failure
     #
     def move(self, dx, dy):
-        
         x = self.x + dx + self.rand() * self.motion_noise
         y = self.y + dy + self.rand() * self.motion_noise
         
@@ -57,26 +52,32 @@ class robot:
             self.y = y
             return True
 
-
     # --------
     # sense: returns x- and y- distances to landmarks within visibility range
     #        because not all landmarks may be in this range, the list of measurements
     #        is of variable length. Set measurement_range to -1 if you want all
     #        landmarks to be visible at all times
-    #
-    
-    ## TODO: paste your complete the sense function, here
-    ## make sure the indentation of the code is correct
+    #  Algorithm:
+    ## (1) Iterate through all of the landmarks in a world
+    ##      for each landmark
+    ##          (a) compute dx and dy, the distances between the robot and the landmark
+    ##          (b) account for measurement noise by *adding* a noise component to dx and dy
+    ##              Note: The noise component should be a random value between [-1.0, 1.0)*measurement_noise
+    ##              Note: Feel free to use the function self.rand() to help calculate this noise component
+    ##          (c) If either of the distances, dx or dy, fall outside of the internal var, measurement_range
+    ##              then we cannot record them; if they do fall in the range, then add them to the measurements list
+    ##              as list.append([index, dx, dy]), this format is important for data creation done later
+    ## (2) return the final, complete list of measurements
     def sense(self):
-        ''' This function does not take in any parameters, instead it references internal variables
-            (such as self.landamrks) to measure the distance between the robot and any landmarks
-            that the robot can see (that are within its measurement range).
+        ''' 
+            This function does not take in any parameters, instead it references internal variables
+            (such as self.landamrks) to measure the distance between the Robot and any landmarks
+            that the Robot can see (that are within its measurement range).
             This function returns a list of landmark indices, and the measured distances (dx, dy)
-            between the robot's position and said landmarks.
+            between the Robot's position and said landmarks.
             This function should account for measurement_noise and measurement_range.
             One item in the returned list should be in the form: [landmark_index, dx, dy].
-            '''
-           
+        '''
         measurements = []
 
         for i, landmark in enumerate(self.landmarks):
@@ -88,21 +89,7 @@ class robot:
                     dx + self.rand() * self.measurement_noise,
                     dy + self.rand() * self.measurement_noise
                 ])
-        
-        ## TODO: iterate through all of the landmarks in a world
-        
-        ## TODO: For each landmark
-        ## 1. compute dx and dy, the distances between the robot and the landmark
-        ## 2. account for measurement noise by *adding* a noise component to dx and dy
-        ##    - The noise component should be a random value between [-1.0, 1.0)*measurement_noise
-        ##    - Feel free to use the function self.rand() to help calculate this noise component
-        ## 3. If either of the distances, dx or dy, fall outside of the internal var, measurement_range
-        ##    then we cannot record them; if they do fall in the range, then add them to the measurements list
-        ##    as list.append([index, dx, dy]), this format is important for data creation done later
-        
-        ## TODO: return the final, complete list of measurements
         return measurements
-
 
     # --------
     # make_landmarks:
@@ -115,16 +102,13 @@ class robot:
                                    round(random.random() * self.world_size)])
         self.num_landmarks = num_landmarks
 
+    # called when print(Robot) is called; prints the Robot's location
+    def __repr__(self):
+        return 'Robot: [x = %.5f y = %.5f]'  % (self.x, self.y)
+
+    # private:
     def __is_outside_boundaries(self, new_x, new_y):
         return new_x < 0.0 or new_x > self.world_size or new_y < 0.0 or new_y > self.world_size
     
     def __is_within_range(self, lx, ly):
         return lx <= self.measurement_range and ly <= self.measurement_range
-
-    # called when print(robot) is called; prints the robot's location
-    def __repr__(self):
-        return 'Robot: [x=%.5f y=%.5f]'  % (self.x, self.y)
-
-
-
-####### END robot class #######
