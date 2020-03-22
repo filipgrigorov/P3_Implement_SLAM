@@ -74,7 +74,7 @@ def make_data(N, num_landmarks, world_size, measurement_range, motion_noise,
         dy = np.sin(orientation) * distance
     
         for k in range(0, N - 1):
-            print('Run: ', k)
+            #print('Run: ', k)
             # collect sensor measurements in a list, Z
             Z = robot.sense()
 
