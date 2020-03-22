@@ -56,7 +56,7 @@ def display_world(world_size, position, landmarks=None):
 # collected over a specified number of time steps, N
 #
 def make_data(N, num_landmarks, world_size, measurement_range, motion_noise, 
-              measurement_noise, distance):
+              measurement_noise, distance, is_debug=False):
     # check if data has been made
     complete = False
 
@@ -65,7 +65,10 @@ def make_data(N, num_landmarks, world_size, measurement_range, motion_noise,
 
         # make robot and landmarks
         robot = Robot(world_size, measurement_range, motion_noise, measurement_noise)
-        robot.make_landmarks(num_landmarks)
+        if is_debug:
+            robot.make_debug_landmarks(num_landmarks) 
+        else :
+            robot.make_landmarks(num_landmarks)
         seen = [False for row in range(num_landmarks)]
     
         # guess an initial motion

@@ -102,6 +102,13 @@ class Robot:
                                    round(random.random() * self.world_size)])
         self.num_landmarks = num_landmarks
 
+    def make_debug_landmarks(self, num_landmarks):
+        self.landmarks = []
+        for i in range(num_landmarks):
+            self.landmarks.append([round((0.1 + i) * self.world_size),
+                                   round((0.1 + i) * self.world_size)])
+        self.num_landmarks = num_landmarks
+
     # called when print(Robot) is called; prints the Robot's location
     def __repr__(self):
         return 'Robot: [x = %.5f y = %.5f]'  % (self.x, self.y)
