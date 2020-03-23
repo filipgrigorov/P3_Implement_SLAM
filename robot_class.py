@@ -83,7 +83,7 @@ class Robot:
         for i, landmark in enumerate(self.landmarks):
             dx = landmark[0] - self.x
             dy = landmark[1] - self.y
-            if self.__is_within_range(dx, dy):
+            if self.measurement_range == -1 or self.__is_within_range(dx, dy):
                 measurements.append([
                     i,
                     dx + self.rand() * self.measurement_noise,
@@ -111,4 +111,4 @@ class Robot:
         return new_x < 0.0 or new_x > self.world_size or new_y < 0.0 or new_y > self.world_size
     
     def __is_within_range(self, lx, ly):
-        return lx <= self.measurement_range and ly <= self.measurement_range
+        return abs(lx) <= self.measurement_range and abs(ly) <= self.measurement_range
